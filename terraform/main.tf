@@ -154,7 +154,6 @@ resource "aws_elb" "lb" {
   }
 
   tags {
-    monitoring = "datadog"
   }
 
   lifecycle { create_before_destroy = true }
@@ -219,9 +218,9 @@ rm /etc/init/docker.override
 service docker start
 
 # datadog
-sed -i -e 's/__DD_API_KEY/${var.dd_api_key}/g;s/__DD_TAGS/${var.cluster_name}/g' /etc/dd-agent/datadog.conf
-update-rc.d datadog-agent defaults
-service datadog-agent start
+#sed -i -e 's/__DD_API_KEY/${var.dd_api_key}/g;s/__DD_TAGS/${var.cluster_name}/g' /etc/dd-agent/datadog.conf
+#update-rc.d datadog-agent defaults
+#service datadog-agent start
 
 # zk-exhibitor
 docker create --name=zk-exhibitor \
@@ -259,8 +258,8 @@ resource "aws_autoscaling_group" "servers" {
   vpc_zone_identifier = ["${split(",", var.subnets)}"]
 
   tag {
-    key = "monitoring"
-    value = "datadog"
+    key = "Contact"
+    value = "LifecycleAutomation@scholastic.com"
     propagate_at_launch = true
   }
   tag {
