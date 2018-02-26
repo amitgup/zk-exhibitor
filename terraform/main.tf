@@ -204,7 +204,7 @@ resource "aws_iam_instance_profile" "server" {
 resource "aws_launch_configuration" "servers" {
   name_prefix       = "${var.cluster_name}-zkex-"
   instance_type     = "${var.instance_type}"
-  image_id          = "${atlas_artifact.zk-exhibitor-host.metadata_full.ami_id}"
+  image_id          = "${atlas_artifact.zk-exhibitor-host.metadata.ami_id}"
   key_name          = "${var.key_name}"
   iam_instance_profile = "${aws_iam_instance_profile.server.id}"
   security_groups   = ["${var.admin_security_group}", "${aws_security_group.server.id}"]
