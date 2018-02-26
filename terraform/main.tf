@@ -21,13 +21,9 @@ variable "exhibitor_s3_region" {
   description = "region for exhibitor backups of ZK configs"
   default = "us-west-1"
 }
-variable "host_artifact" {
-  description = "atlas artifact name for exhibitor"
-  default = "udacity/zk-exhibitor-ubuntu-14.04-amd64"
-}
-variable "host_version" {
-  description = "version metadata for atlas artifact (e.g. udacity/zk-exhibitor-ubuntu-14.04-amd64)"
-  default = "3.4.8_1.5.6"
+variable "image_id" {
+  description = "Image ID"
+  default = "ami-a7a242da"
 }
 variable "zk_exhibitor_docker_image" {
   description = "ZK+Exhibitor Docker image (format: [<registry>[:<port>]/]<repository>:<version>)"
@@ -50,15 +46,6 @@ variable "root_volume_size" {
 }
 
 /*** RESOURCES ***/
-resource "atlas_artifact" "zk-exhibitor-host" {
-  name = "${var.host_artifact}"
-  type = "aws.ami"
-  metadata {
-    version = "${var.host_version}"
-  }
-
-  lifecycle { create_before_destroy = true }
-}
 
 resource "aws_security_group" "client" {
   name = "${var.cluster_name}-zkex-client-sg"
@@ -204,7 +191,7 @@ resource "aws_iam_instance_profile" "server" {
 resource "aws_launch_configuration" "servers" {
   name_prefix       = "${var.cluster_name}-zkex-"
   instance_type     = "${var.instance_type}"
-  image_id          = "${atlas_artifact.zk-exhibitor-host.metadata.ami_id}"
+  image_id          = "${var.image_id}"
   key_name          = "${var.key_name}"
   iam_instance_profile = "${aws_iam_instance_profile.server.id}"
   security_groups   = ["${var.admin_security_group}", "${aws_security_group.server.id}"]
